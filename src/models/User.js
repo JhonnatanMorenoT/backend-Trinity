@@ -6,6 +6,7 @@ const UsersSchema = new Schema({
     unique: true,
     required: true,
   },
+  status: Boolean,
   passwordHash: { type: String, required: true },
   rol: {
     type: String,

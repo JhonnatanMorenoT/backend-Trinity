@@ -9,9 +9,10 @@ class UsersController extends PrimaryController {
 
   create = async (req, res, next) => {
     try {
-      const { body } = req
-      const { username, password, rol } = body
-      const userValidateUsername = await User.findOne({ username })
+      const { body } = req;
+      const { username, password, rol } = body;
+      const userValidateUsername = await User.findOne({ username });
+      const { JWT_PASSWORD } = process.env;
       const message = `this username already exist`
 
       if (userValidateUsername)
@@ -23,14 +24,19 @@ class UsersController extends PrimaryController {
         username,
         passwordHash,
         rol,
+        status:false
       })
 
-      const savedUser = await user.save()
-      return res.status(201).json(savedUser).end()
-    } catch (e) {
-      next(e)
+      const savedUser = await user.save();
+      const token = jwt.sign({ ...user, id: savedUser.id }, JWT_PASSWORD);
+
+      return res.status(201).json({ id: savedUser.id, ...user, token }); 
+  }   catch (err) {
+      console.log('[+] ERROR:', err);
+      }
+      return res.status(400).json({ message: 'error to try to create a new user' });
     }
-  }
+  
 }
 
 const userController = new UsersController()
