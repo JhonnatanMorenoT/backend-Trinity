@@ -2,7 +2,7 @@ const { Router } = require('express')
 const { sessionController } = require('../controllers/SessionController')
 const { userRouter } = require('./users.routes')
 const { plataformRouter } = require('./plataform.routes')
-const handleAuth = require('../middlewares/handleAuth')
+// const handleAuth = require('../middlewares/handleAuth')
 
 const router = Router()
 
@@ -15,7 +15,7 @@ router.get('/', (_, res) => {
     .end()
 })
 
-router.use(handleAuth)
+// router.use(handleAuth)
 
 // session || login route
 router.post('/login', sessionController.login)
@@ -23,6 +23,6 @@ router.post('/login', sessionController.login)
 router.use('/users', userRouter)
 
 // Routing Plataform View
-router.use('/aprender', plataformRouter)
+router.use(plataformRouter)
 
 module.exports = router

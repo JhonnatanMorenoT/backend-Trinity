@@ -1,0 +1,12 @@
+POST http://localhost:3200/api/recommendations
+Content-Type: application/json
+
+{
+  "title": "YouTube",
+  "subtitle": "Minudev",
+  "typeSite": "youtube",
+  "link": "https://www.youtube.com/channel/UC8LeXCWOalN8SxlrPcG-PaQ",
+}
+
+### GET
+GET http://localhost:3200/api/recommendations

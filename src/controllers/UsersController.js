@@ -12,7 +12,6 @@ class UsersController extends PrimaryController {
       const { body } = req;
       const { username, password, rol } = body;
       const userValidateUsername = await User.findOne({ username });
-      const { JWT_PASSWORD } = process.env;
       const message = `this username already exist`
 
       if (userValidateUsername)
@@ -28,7 +27,6 @@ class UsersController extends PrimaryController {
       })
 
       const savedUser = await user.save();
-      const token = jwt.sign({ ...user, id: savedUser.id }, JWT_PASSWORD);
 
       return res.status(201).json({ id: savedUser.id, ...user, token }); 
   }   catch (err) {

@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const { User } = require('../models/User')
 
@@ -7,7 +6,7 @@ class SessionController {
     try {
       const { body } = req
       const { username, password } = body
-      const { JWT_PASSWORD } = process.env
+      // const { JWT_PASSWORD } = process.env
       const user = await User.findOne({ username })
       const passwordCorrect =
         user === null
@@ -18,11 +17,11 @@ class SessionController {
         return res.status(401).json({ error: 'invalid user or password' }).end()
 
       const userForToken = { id: user._id, username: user.username }
-      const token = jwt.sign(userForToken, JWT_PASSWORD)
+      // const token = jwt.sign(userForToken, JWT_PASSWORD)
 
       return res
         .status(200)
-        .json({ ...userForToken, token })
+        .json({ ...userForToken })
         .end()
     } catch (e) {
       next(e)

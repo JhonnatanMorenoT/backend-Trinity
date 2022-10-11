@@ -1,60 +1,5 @@
-const Recommendations = [
-  {
-    title: 'YouTube',
-    subtitle: 'Minudev',
-    typeSite: 'youtube',
-    link: 'https://www.youtube.com/channel/UC8LeXCWOalN8SxlrPcG-PaQ',
-  },
-  {
-    title: 'YouTube',
-    subtitle: 'HolaMundo',
-    typeSite: 'youtube',
-    link: 'https://www.youtube.com/c/HolaMundoDev',
-  },
-  {
-    title: 'Platzi',
-    subtitle: 'Curso Práctico de Front-end',
-    typeSite: 'sitioweb',
-    link: 'https://platzi.com/cursos/frontend-developer-practico/',
-  },
-  {
-    title: 'Platzi',
-    subtitle: 'MDN Web Docs',
-    typeSite: 'youtube',
-  },
-  {
-    title: 'Web',
-    subtitle: 'Profe Alex',
-    typeSite: 'sitioweb',
-  },
-]
-
-const LearningPaths = [
-  {
-    title: 'Ruta Frontend',
-    description:
-      'Hola dev, aquí encontrarás la ruta sugerida por Trinity FS si deseas convertirte en desarrollador Front-End <Disfruta del proceso />',
-    link: '/aprender/frontend',
-    image:
-      'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
-  },
-  {
-    title: 'Ruta Backend',
-    description:
-      'Hola dev, aquí encontrarás la ruta sugerida por Trinity FS si deseas convertirte en desarrollador Back-End <Disfruta del proceso />',
-    link: '/aprender/backend',
-    image:
-      'https://images.unsplash.com/photo-1587620962725-abab7fe55159?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1031&q=80',
-  },
-  {
-    title: 'Ruta Complementos',
-    description:
-      'Hola dev, Aquí encontrarás temas que te puede ayudar de complemento  <Disfruta del proceso />',
-    link: '/aprender/complementos',
-    image:
-      'https://images.unsplash.com/photo-1603468620905-8de7d86b781e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=876&q=80',
-  },
-]
+const { Recommendation } = require('../models/Recommedation')
+const { Learning } = require('../models/Learning')
 
 const FrontendPath = {
   title: 'Ruta de Frontend',
@@ -359,17 +304,51 @@ const ContentsHTML = [
 ]
 
 class PlataformController {
+  getListOfRecommendations = async (req, res, next) => {
+    try {
+      const recommendFound = await Recommendation.find()
+
+      return res.status(200).json(recommendFound).end()
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  postListOfRecommendations = async (req, res, next) => {
+    try {
+      const { body } = req
+      const recommendationSchema = new Recommendation(body)
+      await recommendationSchema.save()
+
+      return res.status(202).json({ message: 'saved recommendation' }).end()
+    } catch (e) {
+      next(e)
+    }
+  }
+  
   getLearningPaths = async (req, res, next) => {
     try {
+      const LearningPaths = await Learning.find()
+
       return res.status(202).json(LearningPaths).end()
     } catch (e) {
       next(e)
     }
   }
 
-  getListOfRecommendations = async (req, res, next) => {
+  postLearning = async (req, res, next) => {
     try {
-      return res.status(202).json(Recommendations).end()
+      const { body } = req
+
+      const dataWithoutSave = body.map((data) => {
+        const learn = new Learning(data)
+
+        return learn.save()
+      })
+
+      await Promise.allSettled(dataWithoutSave)
+
+      return res.status(202).json({ message: 'learning post saved in database' }).end()
     } catch (e) {
       next(e)
     }
